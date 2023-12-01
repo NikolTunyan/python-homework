@@ -1,70 +1,101 @@
-class Fraction:
-  def __init__(self, numerator, denominator):
-      # Проверяем, что знаменатель не равен нулю
-      if denominator == 0:
-          raise ValueError("Знаменатель не может быть равен нулю.")
+# Базовый класс для Фигуры
+class Figure:
+    def area(self):
+        pass
 
-      self.numerator = numerator
-      self.denominator = denominator
-      self.simplify()  # Упрощаем дробь при инициализации
+    def volume(self):
+        pass
 
-  def simplify(self):
-      # Находим наибольший общий делитель и используем его для упрощения дроби
-      common = self.find_common_divisor(self.numerator, self.denominator)
-      self.numerator //= common
-      self.denominator //= common
+# 2D фигуры
+class TwoDimensionalFigure(Figure):
+    def area(self):
+        pass
 
-  def find_common_divisor(self, a, b):
-      # Находим наибольший общий делитель двух чисел
-      while b:
-          a, b = b, a % b
-      return a
+# 3D фигуры
+class ThreeDimensionalFigure(Figure):
+    def volume(self):
+        pass
 
-  def __str__(self):
-      return f"{self.numerator}/{self.denominator}"
+# Квадрат (2D фигура)
+class Square(TwoDimensionalFigure):
+    def __init__(self, side_length):
+        self.side_length = side_length
 
-  def __add__(self, other):
-      # Сложение дробей
-      new_numerator = self.numerator * other.denominator + other.numerator * self.denominator
-      new_denominator = self.denominator * other.denominator
-      return Fraction(new_numerator, new_denominator)
+    def area(self):
+        # Формула для площади квадрата: a * a
+        return self.side_length ** 2
 
-  def __sub__(self, other):
-      # Вычитание дробей
-      new_numerator = self.numerator * other.denominator - other.numerator * self.denominator
-      new_denominator = self.denominator * other.denominator
-      return Fraction(new_numerator, new_denominator)
+# Треугольник (2D фигура)
+class Triangle(TwoDimensionalFigure):
+    def __init__(self, base, height):
+        self.base = base
+        self.height = height
 
-  def __mul__(self, other):
-      # Умножение дробей
-      new_numerator = self.numerator * other.numerator
-      new_denominator = self.denominator * other.denominator
-      return Fraction(new_numerator, new_denominator)
+    def area(self):
+        # Формула для площади треугольника: (0.5 * b * h)
+        return 0.5 * self.base * self.height
 
-  def __truediv__(self, other):
-      # Деление дробей
-      if other.numerator == 0:
-          raise ValueError("Нельзя делить на ноль.")
+    @staticmethod
+    def area_from_side_and_two_angles(side, angle1, angle2):
+        # Формула для площади треугольника по длине стороны и двум углам: (0.5 * a^2 * sin(B) * sin(C) / sin(A))
+        import math
+        angle3 = 180 - angle1 - angle2
+        return 0.5 * side**2 * math.sin(math.radians(angle1)) * math.sin(math.radians(angle2)) / math.sin(math.radians(angle3))
 
-      new_numerator = self.numerator * other.denominator
-      new_denominator = self.denominator * other.numerator
-      return Fraction(new_numerator, new_denominator)
+    @staticmethod
+    def area_from_three_sides(side1, side2, side3):
+        # Формула для площади треугольника по трем сторонам: sqrt(s * (s - a) * (s - b) * (s - c)), где s - полупериметр
+        s = (side1 + side2 + side3) / 2
+        return (s * (s - side1) * (s - side2) * (s - side3))**0.5
+
+# Куб (3D фигура)
+class Cube(ThreeDimensionalFigure):
+    def __init__(self, side_length):
+        self.side_length = side_length
+
+    def volume(self):
+        # Формула для объема куба: a * a * a
+        return self.side_length ** 3
+
+# Конус (3D фигура)
+class Cone(ThreeDimensionalFigure):
+    def __init__(self, radius, height):
+        self.radius = radius
+        self.height = height
+
+    def volume(self):
+        # Формула для объема конуса: (1/3) * pi * r^2 * h
+        return (1/3) * 3.14159 * self.radius**2 * self.height
+
+# Функция для выбора формулы для вычисления площади треугольника
+def choose_triangle_formula():
+    print("Выберите формулу для вычисления площади треугольника:")
+    print("1. Исходя из длины стороны и двух углов")
+    print("2. Исходя из длин трех сторон")
+    choice = input("Введите номер выбранной формулы (1 или 2): ")
+    return choice
 
 # Пример использования
-fraction1 = Fraction(1, 1235)
-fraction2 = Fraction(1, 1235)
+square = Square(5)
+triangle = Triangle(4, 3)
+cube = Cube(3)
+cone = Cone(2, 4)
 
-print("Дробь 1:", fraction1)
-print("Дробь 2:", fraction2)
+print(f"Площадь квадрата: ({square.side_length} * {square.side_length}) = {square.area()}")
+print(f"Площадь треугольника: (0.5 * {triangle.base} * {triangle.height}) = {triangle.area()}")
 
-sum_fraction = fraction1 + fraction2
-print("Сумма:", sum_fraction)
+# Выбор формулы для площади треугольника
+triangle_formula_choice = choose_triangle_formula()
 
-difference_fraction = fraction1 - fraction2
-print("Разность:", difference_fraction)
-
-product_fraction = fraction1 * fraction2
-print("Произведение:", product_fraction)
-
-quotient_fraction = fraction1 / fraction2
-print("Частное:", quotient_fraction)
+if triangle_formula_choice == '1':
+    side = float(input("Введите длину стороны треугольника: "))
+    angle1 = float(input("Введите угол A: "))
+    angle2 = float(input("Введите угол B: "))
+    print(f"Площадь треугольника: {Triangle.area_from_side_and_two_angles(side, angle1, angle2)}")
+elif triangle_formula_choice == '2':
+    side1 = float(input("Введите длину стороны a: "))
+    side2 = float(input("Введите длину стороны b: "))
+    side3 = float(input("Введите длину стороны c: "))
+    print(f"Площадь треугольника: {Triangle.area_from_three_sides(side1, side2, side3)}")
+else:
+    print("Неверный выбор формулы.")
