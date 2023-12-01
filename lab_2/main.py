@@ -1,64 +1,70 @@
-# Базовый класс для Фигуры
-class Figure:
-    def area(self):
-        pass
+class Fraction:
+  def __init__(self, numerator, denominator):
+      # Проверяем, что знаменатель не равен нулю
+      if denominator == 0:
+          raise ValueError("Знаменатель не может быть равен нулю.")
 
-    def volume(self):
-        pass
+      self.numerator = numerator
+      self.denominator = denominator
+      self.simplify()  # Упрощаем дробь при инициализации
 
-# 2D фигуры
-class TwoDimensionalFigure(Figure):
-    def area(self):
-        pass
+  def simplify(self):
+      # Находим наибольший общий делитель и используем его для упрощения дроби
+      common = self.find_common_divisor(self.numerator, self.denominator)
+      self.numerator //= common
+      self.denominator //= common
 
-# 3D фигуры
-class ThreeDimensionalFigure(Figure):
-    def volume(self):
-        pass
+  def find_common_divisor(self, a, b):
+      # Находим наибольший общий делитель двух чисел
+      while b:
+          a, b = b, a % b
+      return a
 
-# Квадрат (2D фигура)
-class Square(TwoDimensionalFigure):
-    def __init__(self, side_length):
-        self.side_length = side_length
+  def __str__(self):
+      return f"{self.numerator}/{self.denominator}"
 
-    def area(self):
-        return self.side_length ** 2
+  def __add__(self, other):
+      # Сложение дробей
+      new_numerator = self.numerator * other.denominator + other.numerator * self.denominator
+      new_denominator = self.denominator * other.denominator
+      return Fraction(new_numerator, new_denominator)
 
-# Треугольник (2D фигура)
-class Triangle(TwoDimensionalFigure):
-    def __init__(self, base, height):
-        self.base = base
-        self.height = height
+  def __sub__(self, other):
+      # Вычитание дробей
+      new_numerator = self.numerator * other.denominator - other.numerator * self.denominator
+      new_denominator = self.denominator * other.denominator
+      return Fraction(new_numerator, new_denominator)
 
-    def area(self):
-        # Формула для площади треугольника
-        return 0.5 * self.base * self.height
+  def __mul__(self, other):
+      # Умножение дробей
+      new_numerator = self.numerator * other.numerator
+      new_denominator = self.denominator * other.denominator
+      return Fraction(new_numerator, new_denominator)
 
-# Куб (3D фигура)
-class Cube(ThreeDimensionalFigure):
-    def __init__(self, side_length):
-        self.side_length = side_length
+  def __truediv__(self, other):
+      # Деление дробей
+      if other.numerator == 0:
+          raise ValueError("Нельзя делить на ноль.")
 
-    def volume(self):
-        return self.side_length ** 3
-
-# Конус (3D фигура)
-class Cone(ThreeDimensionalFigure):
-    def __init__(self, radius, height):
-        self.radius = radius
-        self.height = height
-
-    def volume(self):
-        # Формула для объема конуса
-        return (1/3) * 3.14159 * self.radius**2 * self.height
+      new_numerator = self.numerator * other.denominator
+      new_denominator = self.denominator * other.numerator
+      return Fraction(new_numerator, new_denominator)
 
 # Пример использования
-square = Square(5)
-triangle = Triangle(4, 3)
-cube = Cube(3)
-cone = Cone(2, 4)
+fraction1 = Fraction(1, 1235)
+fraction2 = Fraction(1, 1235)
 
-print(f"Площадь квадрата: {square.area()}")
-print(f"Площадь треугольника: {triangle.area()}")
-print(f"Объем куба: {cube.volume()}")
-print(f"Объем конуса: {cone.volume()}")
+print("Дробь 1:", fraction1)
+print("Дробь 2:", fraction2)
+
+sum_fraction = fraction1 + fraction2
+print("Сумма:", sum_fraction)
+
+difference_fraction = fraction1 - fraction2
+print("Разность:", difference_fraction)
+
+product_fraction = fraction1 * fraction2
+print("Произведение:", product_fraction)
+
+quotient_fraction = fraction1 / fraction2
+print("Частное:", quotient_fraction)
